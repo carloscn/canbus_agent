@@ -17,7 +17,6 @@
 static pthread_mutex_t recv_lock;
 static pthread_t can_thread = -1;
 
-
 int32_t hal_com_init(HAL_COM_T *ctx, const char *parameters)
 {
     int32_t ret = HAL_SUCCESS;
@@ -151,6 +150,7 @@ int32_t hal_com_read(HAL_COM_T *ctx, uint8_t *buffer, size_t *len)
             continue;
         }
         read_bytes = frame.can_dlc;
+        ctx->current_can_id = frame.can_id;
         memcpy((void *)(buffer + read_total_bytes),
                (void *)&frame.data,
                read_bytes);
@@ -201,5 +201,20 @@ int32_t hal_com_get_portnum(HAL_COM_T *ctx, int32_t *port)
 
     *port = (int32_t) ctx->current_can_id;
 
+    return ret;
+}
+
+int32_t hal_com_get_fd(HAL_COM_T *ctx, int32_t *fd)
+{
+    int32_t ret = 0;
+
+    UTILS_ASSERT_MSG(NULL == ctx,
+                     "ctx is NULL!\n");
+    UTILS_ASSERT_MSG(NULL == fd,
+                     "fd is NULL!\n");
+
+    *fd = ctx->sock_fd;
+
+finish:
     return ret;
 }

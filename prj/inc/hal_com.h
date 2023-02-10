@@ -13,6 +13,7 @@
 
 #define HAL_COM_NAME ("can0")
 #define HAL_COM_CAN_ID(_x) (_x)
+#define HAL_COM_DATA_BLOCK_SIZE (128u)
 
 typedef void (*callback_fn)(int32_t, uint8_t*, int32_t);
 
@@ -38,5 +39,6 @@ int32_t hal_com_write(HAL_COM_T *ctx, uint8_t *buffer, size_t len);
 int32_t hal_com_set_portnum(HAL_COM_T *ctx, int32_t port);
 int32_t hal_com_get_portnum(HAL_COM_T *ctx, int32_t *port);
 int32_t hal_com_set_config(HAL_COM_T *ctx, HAL_COM_CONFIG_T config);
+int32_t hal_com_get_fd(HAL_COM_T *ctx, int32_t *fd);
 
 #endif /* _HAL_COM_ */

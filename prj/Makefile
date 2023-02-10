@@ -9,11 +9,12 @@ OBJS = $(patsubst %c, %o, $(SRCS))
 INCS = -I./             \
 	   -I./inc          \
 	   -I./thirdpart/inc
+LIBS = -lpthread
 
 $(TARGET) : entry
 
 entry: main
-	$(CC) ./build/*.o -o $(TARGET) $(INCS) -L./build/
+	$(CC) ./build/*.o -o $(TARGET) $(INCS) -L./build/ $(LIBS)
 	echo "[done] build finish: $(TARGET)"
 
 main: src

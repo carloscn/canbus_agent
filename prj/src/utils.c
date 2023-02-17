@@ -86,8 +86,8 @@ static void bio_dump(const char *s, int len)
 {
     char buf[160+1] = {0};
     char tmp[20] = {0};
-    int32_t i, j, rows, trunc;
     unsigned char ch;
+    int32_t i, j, rows, trunc;
 
     trunc = 0;
 

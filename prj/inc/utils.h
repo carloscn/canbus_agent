@@ -3,6 +3,7 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #define _PROMPT "[canbus_agent]"
 #define ENABLE_DBG 0
@@ -69,11 +70,24 @@
         }                                                                      \
     } while (0)
 
+#define UTILS_SAFE_FREE(_p)                                                    \
+    do {                                                                       \
+        if ((_p) != NULL) {                                                    \
+            free((_p));                                                        \
+            (_p) = NULL;                                                       \
+        }                                                                      \
+    } while(0)
 /* MACRO define */
 #define UTILS_ARRAY_SIZE(_a_) ((size_t)(sizeof(_a_)/sizeof((_a_)[0])))
 #define UTILS_MAX(__a, __b) (_a_, _b_) (((_a_)>(_b_))?(_a_):(_b_))
 #define UTILS_MIN(__a, __b) (_a_, _b_) (((_a_)<(_b_))?(_a_):(_b_))
 #define UTILS_ASCII_TO_INT(__x) (((__x) - '0'))
 #define UTILS_INT_TO_ASCII(__x) (((__x) + '0'))
+#define UTILS_ROUNDUP(x, n) ((x+(n-1))&(~(n-1)))
 
+int32_t utils_memcmp(void *a, void *b, size_t len);
+void utils_print_rcv_frame(uint8_t *buffer, size_t len, int32_t id);
+void utils_print_array(uint8_t *buffer, size_t len, char* msg);
+int32_t utils_convert_str_to_be(const char *str, uint8_t *buf,
+                                       size_t ascii_len);
 #endif /* _UTILS_ */

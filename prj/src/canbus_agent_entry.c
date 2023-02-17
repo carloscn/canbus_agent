@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <sys/epoll.h>
+#include "prov_msg.h"
+#include "pal_cipher.h"
+#include <string.h>
 
 #define EPOLL_SIZE 1024
 #define CAN_AGENT_RECV_BUFFER_SIZE (1024u)
@@ -79,16 +82,7 @@ void can_agent_free(CAN_AGENT_T *ctx)
 
 static void canrecive(int can_id, uint8_t *buf, int buf_len)
 {
-    int i;
-    printf("ID: 0x%04X, LEN: %02d\n", can_id, buf_len);
-    for (i = 0; i < buf_len; i++)
-    {
-        if (i % 16 == 0) {
-            printf("\n");
-        }
-        printf("%02X  ", *(buf + i));
-    }
-    printf("\r\n");
+    utils_print_rcv_frame(buf, buf_len, can_id);
 }
 
 static void *canbus_recv_msg(void *param)
@@ -115,7 +109,7 @@ static void *canbus_recv_msg(void *param)
 
         for (int i = 0; i < nfds; i ++) {
             if (events[i].events & EPOLLIN) {
-                ret = hal_com_read(&ctx->com, buffer, &nbytes);
+                ret = hal_com_read_timeout(&ctx->com, buffer, &nbytes, 200);
                 UTILS_CHECK_RET(ret, "Read data failed\n");
                 ret = hal_com_get_portnum(&ctx->com, &frameid);
                 UTILS_CHECK_RET(ret, "Get frame id failed\n");
@@ -134,6 +128,12 @@ finish:
 int32_t canbus_agent_entry(void)
 {
     int32_t ret = 0;
+
+    // ret = test_hal_com_write();
+    // UTILS_CHECK_CONDITION(ret != 0,
+    //                       ret,
+    //                       "failed on test_hal_com_write()!\n");
+
 
 finish:
     return ret;
@@ -184,7 +184,7 @@ int32_t test_hal_com_read(void)
 
     while (1) {
         UTILS_LOG("wait for recv !\n");
-        sleep(1);
+        sleep(3);
     }
 finish:
     can_agent_free(&ctx);

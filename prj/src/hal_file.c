@@ -4,9 +4,9 @@ int32_t hal_file_write(const char *path, uint8_t *buffer, size_t len)
 {
     int32_t ret = 0;
     FILE *fp = NULL;
-    size_t left = len;
-    size_t write_bytes = 0;
-    size_t written_bytes = 0;
+    ssize_t left = (ssize_t)len;
+    ssize_t write_bytes = 0;
+    ssize_t written_bytes = 0;
 
     if (!left) {
         goto finish;

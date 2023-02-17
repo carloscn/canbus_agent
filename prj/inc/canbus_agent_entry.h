@@ -8,4 +8,5 @@ typedef struct _can_agent_t CAN_AGENT_T;
 int32_t canbus_agent_entry(void);
 int32_t test_hal_com_write(void);
 int32_t test_hal_com_read(void);
+int32_t test_cipher(void);
 #endif /* _CANBUS_AGENT_ENTRY_ */

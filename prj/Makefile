@@ -8,13 +8,14 @@ SRCS = $(wildcard *.c)
 OBJS = $(patsubst %c, %o, $(SRCS))
 INCS = -I./             \
 	   -I./inc          \
-	   -I./thirdpart/inc
-LIBS = -lpthread
+	   -I../thirdpart/openssl/include
+LIBS = -lpthread \
+       -L ./thirdpart/openssl/lib/ -lcrypto
 
 $(TARGET) : entry
 
 entry: main
-	$(CC) ./build/*.o -o $(TARGET) $(INCS) -L./build/ $(LIBS)
+	$(CC) ./build/*.o -o $(TARGET) $(INCS) -L./build/  $(LIBS)
 	echo "[done] build finish: $(TARGET)"
 
 main: src
@@ -31,6 +32,15 @@ src: init
 init:
 	mkdir -p ./build
 
+tscp:test
+	scp -r test_canbus_agent.elf root@$(REMOTE_IP):/home/root/test_canbus_agent.elf
+
+test:
+	make clean
+	make
+	make -C ./tests/
+	cp -r ./tests/test_canbus_agent.elf ./
+
 scp:
 	scp -r $(TARGET) root@$(REMOTE_IP):/home/root/$(TARGET)
 
@@ -38,3 +48,4 @@ clean:
 	rm -f $(OBJS) $(TARGET)
 	make -C ./src clean
 	rm -rf ./build
+	rm -rf *.elf

@@ -1,15 +1,15 @@
 .PHONY:all clean
 
+TARGET = canbus_agent.elf
+TEST_TARGET = test_canbus_agent.elf
+
 CROSS_COMPILE=arm-linux-gnueabihf-
 CC = $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++
 LD = $(CROSS_COMPILE)ld
 DEBUG = -g
 CFLAGS = $(DEBUG) -Wall -c -fPIC
-TEST_CFLAGS += $(CFLAGS) -DUNIT_TEST
-
-TARGET = canbus_agent.elf
-TEST_TARGET = test_canbus_agent.elf
+TEST_CFLAGS = $(DEBUG) -c -fPIC -Wall -DUNIT_TEST -lstrong
 
 TOP_PATH = $(shell pwd)
 INC_PATH = -I$(TOP_PATH)/inc
@@ -31,22 +31,14 @@ INC_PATH += -I$(TP_CUNIT)/include
 TEST_LIB_PATH = $(LIB_PATH)
 TEST_LIB_PATH += -L$(TP_CUNIT)/lib -lcunit
 TEST_SRC_PATH = $(TOP_PATH)/tests
-TEST_INC_PATH = -I$(TOP_PATH)/tests
-TEST_INC_PATH += $(INC_PATH)
-TEST_DIRS = $(shell find $(TEST_SRC_PATH) -maxdepth 3 -type d)
+TEST_INC_PATH = $(INC_PATH)
+TEST_INC_PATH += -I$(TOP_PATH)/tests
+TEST_INC_PATH += -I$(TP_CUNIT)/include
+TEST_DIRS = $(shell find $(TEST_SRC_PATH) -maxdepth 1 -type d)
 TEST_SRCS_C += $(foreach dir, $(TEST_DIRS), $(wildcard $(dir)/*.c))
 TEST_OBJS_C = $(patsubst %.c, %.o, $(TEST_SRCS_C))
 
 all:$(TARGET)
-
-test:$(TEST_TARGET)
-
-$(TEST_TARGET): $(TEST_OBJS_C)
-	@ $(CC) $(TEST_LIB_PATH) $^ -o $@
-	@ echo Create $(TEST_TARGET) ok...
-
-$(TEST_OBJS_C): %.o : %.c
-	@ $(CC) $(TEST_CFLAGS) $< -o $@ $(TEST_INC_PATH)
 
 $(TARGET): $(OBJS_C)
 	@ $(CC) $^ -o $@ $(LIB_PATH)
@@ -58,7 +50,16 @@ $(OBJS_C): %.o : %.c
 scp:
 	scp -r $(TARGET) root@$(REMOTE_IP):/home/root/$(TARGET)
 
-tscp: $(TEST_TARGET)
+test:$(TEST_TARGET)
+
+$(TEST_TARGET): $(TEST_OBJS_C) $(OBJS_C)
+	@ $(CC) $^ $(TEST_INC_PATH) $(TEST_LIB_PATH)  -o $@
+	@ echo Create $(TEST_TARGET) ok...
+
+$(TEST_OBJS_C): %.o : %.c
+	@ $(CC) $(TEST_CFLAGS) $(TEST_INC_PATH) $< -o $@
+
+tscp: test
 	scp -r $(TEST_TARGET) root@$(REMOTE_IP):/home/root/$(TEST_TARGET)
 
 clean:

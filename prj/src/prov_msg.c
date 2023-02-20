@@ -52,7 +52,6 @@ finish:
 int32_t prov_msg_depack_req(uint32_t *crypto, uint32_t *crc, uint8_t *payload, size_t *io_len)
 {
     int32_t ret = 0;
-    size_t payload_len = 0;
     RPOV_REQ_MSG_T msg;
 
     memset(&msg, 0, sizeof(RPOV_REQ_MSG_T));

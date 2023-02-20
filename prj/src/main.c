@@ -4,7 +4,8 @@
 #include "config.h"
 #include "canbus_agent_entry.h"
 
-#ifndef UNIT_TEST
+int main(void) __attribute__((weak));
+
 int main(void)
 {
     int32_t ret = 0;
@@ -17,4 +18,3 @@ int main(void)
 finish:
     return ret;
 }
-#endif /* UNIT_TEST */

@@ -88,7 +88,7 @@ static void canrecive(int can_id, uint8_t *buf, int buf_len)
 static void *canbus_recv_msg(void *param)
 {
     int32_t ret = 0;
-    int32_t i = 0, nfds = 0;
+    int32_t nfds = 0;
     int32_t timeout = 2;
     size_t nbytes = HAL_COM_DATA_BLOCK_SIZE;
     uint8_t buffer[CAN_AGENT_RECV_BUFFER_SIZE];
@@ -175,8 +175,6 @@ finish:
 int32_t test_hal_com_read(void)
 {
     int32_t ret = 0;
-    size_t i = 0;
-    HAL_COM_T com_ctx;
     CAN_AGENT_T ctx;
 
     ret = can_agent_init(&ctx, HAL_COM_NAME, canbus_recv_msg);

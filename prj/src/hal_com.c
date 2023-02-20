@@ -19,13 +19,9 @@
 #include <sys/select.h>
 #include <poll.h>
 
-static pthread_mutex_t recv_lock;
-static pthread_t can_thread = -1;
-
 int32_t hal_com_init(HAL_COM_T *ctx, const char *parameters)
 {
     int32_t ret = HAL_SUCCESS;
-    int32_t flags = 0;
 
     UTILS_ASSERT_MSG(NULL == ctx,
                      "ctx is NULL!\n");
@@ -84,7 +80,6 @@ int32_t hal_com_write(HAL_COM_T *ctx, uint8_t *buffer, size_t len)
 {
     int32_t ret = HAL_SUCCESS;
     struct can_frame frame;
-    size_t i = 0;
     size_t left = 0;
     ssize_t write_bytes = 0;
     size_t send_bytes = 0;
@@ -124,7 +119,6 @@ int32_t hal_com_read(HAL_COM_T *ctx, uint8_t *buffer, size_t *len)
 {
     int32_t ret = HAL_SUCCESS;
     struct can_frame frame;
-    ssize_t i = 0;
     ssize_t left = 0;
     ssize_t recv_bytes = 0;
     ssize_t read_bytes = 0;
@@ -176,7 +170,6 @@ int32_t hal_com_read_timeout(HAL_COM_T *ctx, uint8_t *buffer, size_t *len, ssize
 {
     int32_t ret = HAL_SUCCESS;
     struct can_frame frame;
-    ssize_t i = 0;
     ssize_t left = 0;
     ssize_t recv_bytes = 0;
     ssize_t read_bytes = 0;
@@ -248,7 +241,6 @@ int32_t hal_com_set_config(HAL_COM_T *ctx, HAL_COM_CONFIG_T config)
 
     memcpy(&(ctx->config), &config, sizeof(HAL_COM_CONFIG_T));
 
-finish:
     return ret;
 }
 
@@ -261,7 +253,6 @@ int32_t hal_com_set_portnum(HAL_COM_T *ctx, int32_t port)
 
     ctx->current_can_id = (canid_t)port;
 
-finish:
     return ret;
 }
 
@@ -290,6 +281,5 @@ int32_t hal_com_get_fd(HAL_COM_T *ctx, int32_t *fd)
 
     *fd = ctx->sock_fd;
 
-finish:
     return ret;
 }

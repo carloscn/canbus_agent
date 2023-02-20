@@ -91,7 +91,7 @@ int32_t pal_cipher_encrypt_cbc(uint8_t *plain_array,
     uint8_t *out_buf = NULL;
 
     UTILS_CHECK_LEN(plain_len, "plain_array is 0\n");
-    UTILS_CHECK_CONDITION(plain_len & (PAL_CIPHER_AES_CBC_BLOCK_SIZE - 1) != 0,
+    UTILS_CHECK_CONDITION((plain_len & (PAL_CIPHER_AES_CBC_BLOCK_SIZE - 1)) != 0,
                           HAL_ERR_INVALID_PARAM,
                           "input plain_array must be %d aligned!\n",
                           PAL_CIPHER_AES_CBC_BLOCK_SIZE);
@@ -184,7 +184,7 @@ int32_t pal_cipher_decrypt_cbc(uint8_t *cipher_array,
     uint8_t *out_buf = NULL;
 
     UTILS_CHECK_LEN(cipher_len, "cipher_len is 0.\n");
-    UTILS_CHECK_CONDITION(cipher_len & (PAL_CIPHER_AES_CBC_BLOCK_SIZE - 1) != 0,
+    UTILS_CHECK_CONDITION((cipher_len & (PAL_CIPHER_AES_CBC_BLOCK_SIZE - 1)) != 0,
                           HAL_ERR_INVALID_PARAM,
                           "input cipher_array must be %d aligned!\n",
                           PAL_CIPHER_AES_CBC_BLOCK_SIZE);

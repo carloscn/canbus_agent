@@ -20,7 +20,6 @@ static int32_t utils_convert_char_to_nibble(uint8_t inchar, uint8_t *num) {
     ret = -1;
   }
 
-finish:
   return ret;
 }
 
@@ -87,11 +86,10 @@ static void bio_dump(const char *s, int len)
     char buf[160+1] = {0};
     char tmp[20] = {0};
     unsigned char ch;
-    int32_t i, j, rows, trunc;
-
-    trunc = 0;
+    int32_t i, j, rows;
 
 #ifdef TRUNCATE
+    int32_t trunc = 0;
     for(; (len > 0) && ((s[len-1] == ' ') || (s[len-1] == '\0')); len--)
         trunc++;
 #endif
@@ -134,11 +132,6 @@ static void bio_dump(const char *s, int len)
 
 void utils_print_array(uint8_t *buffer, size_t len, char* msg)
 {
-    size_t i = 0;
-    size_t j = 0;
-    size_t line = 8;
-    size_t line_num = 0;
-
     printf("\n");
     printf("%s: the len is %zu\n", msg, len);
     bio_dump((const char *)buffer, len);
@@ -147,7 +140,6 @@ void utils_print_array(uint8_t *buffer, size_t len, char* msg)
 
 void utils_print_rcv_frame(uint8_t *buffer, size_t len, int32_t id)
 {
-    int i;
     printf("ID=%X DLC=%zu ", id, len);
     utils_print_array(buffer, len, "payload");
     printf("\n");
